@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Mom's Heartfelt Garden | Mother's Day Tribute</title>
+    <!-- Google Fonts: Elegant and playful mix -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* keeps hearts from blocking clicks, but inputs remain clickable */
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #ffdde1 0%, #f9b7c2 100%);
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating hearts container (layer on top but pointer-events none so you can interact) */
+        .hearts-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            color: #ff4d6d;
+            filter: drop-shadow(0 0 6px rgba(255, 77, 109, 0.6));
+            animation: floatUp linear forwards;
+            pointer-events: none;
+            z-index: 10;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Different color variations */
+        .heart.soft {
+            color: #ff8c9e;
+            filter: drop-shadow(0 0 4px #ffb3c1);
+        }
+        .heart.light {
+            color: #ffb3c6;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-15vh) rotate(12deg);
+                opacity: 0;
+            }
+        }
+
+        /* Main card - glassmorphism style */
+        .tribute-card {
+            max-width: 650px;
+            width: 100%;
+            background: rgba(255, 248, 245, 0.92);
+            backdrop-filter: blur(8px);
+            border-radius: 60px 60px 80px 80px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3), 0 4px 18px rgba(255, 105, 130, 0.3);
+            padding: 2rem 2rem 2.5rem;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            z-index: 20;
+            position: relative;
+        }
+
+        .tribute-card:hover {
+            transform: scale(1.01);
+        }
+
+        /* Header with heart pulse */
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #c5405a, #ff7b8c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            display: inline-block;
+            animation: gentlePulse 2s infinite ease;
+        }
+        @keyframes gentlePulse {
+            0% { text-shadow: 0 0 0px #ffb7c5; }
+            50% { text-shadow: 0 0 12px #ff9aac; }
+            100% { text-shadow: 0 0 0px #ffb7c5; }
+        }
+
+        .sub {
+            font-size: 1rem;
+            color: #b34e62;
+            font-weight: 600;
+            background: #fff0f3;
+            display: inline-block;
+            padding: 0.2rem 1.2rem;
+            border-radius: 50px;
+            margin-top: 0.6rem;
+        }
+
+        /* Mom's image & name area */
+        .mom-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.8rem;
+        }
+        .img-container {
+            position: relative;
+            width: 170px;
+            height: 170px;
+            margin-bottom: 1.2rem;
+        }
+        .mom-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 15px 25px -8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            background: #ffe0e6;
+        }
+        .img-placeholder-label {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: #ff8ca6;
+            border-radius: 30px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: 0.2s;
+            font-family: monospace;
+        }
+        .img-placeholder-label:hover {
+            background: #ff6b8b;
+            transform: scale(1.02);
+        }
+        #imageUpload {
+            display: none;
+        }
+
+        .name-section {
+            text-align: center;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        .name-label {
+            font-weight: 600;
+            color: #ad4160;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        .mom-name-input {
+            background: #fff5f7;
+            border: 2px solid #ffbfcc;
+            border-radius: 60px;
+            padding: 0.7rem 1.2rem;
+            width: 80%;
+            font-size: 1rem;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            color: #a13e58;
+            text-align: center;
+            margin: 8px 0 8px;
+            transition: 0.2s;
+            outline: none;
+        }
+        .mom-name-input:focus {
+            border-color: #ff6b8b;
+            box-shadow: 0 0 0 3px rgba(255,107,139,0.2);
+        }
+        .display-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            color: #b3415e;
+            background: rgba(255, 235, 240, 0.7);
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            margin-top: 0.2rem;
+        }
+
+        /* Poem card */
+        .poem-box {
+            background: #fff7f9;
+            border-radius: 50px;
+            padding: 1.6rem 1.8rem;
+            margin: 1.6rem 0 1.2rem;
+            box-shadow: inset 0 0 0 1px rgba(255,255,240,0.9), 0 12px 18px -12px rgba(0,0,0,0.1);
+            border-left: 7px solid #ff7a98;
+            text-align: center;
+        }
+        .poem-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #bb4f6c;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+        }
+        .poem-text {
+            font-size: 1.08rem;
+            line-height: 1.65;
+            font-style: italic;
+            color: #3f2a30;
+            font-weight: 500;
+            font-family: 'Quicksand', sans-serif;
+        }
+        .poem-text span {
+            display: block;
+            margin-top: 0.6rem;
+            font-style: normal;
+            font-weight: 600;
+            color: #e65a7a;
+        }
+
+        /* footer extra love */
+        .love-footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #b3637a;
+            margin-top: 1.8rem;
+            border-top: 1px dashed #ffbfcc;
+            padding-top: 1rem;
+        }
+
+        button {
+            background: none;
+            border: none;
+        }
+
+        /* responsive */
+        @media (max-width: 550px) {
+            .tribute-card {
+                padding: 1.5rem;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .display-name {
+                font-size: 1.3rem;
+            }
+            .poem-text {
+                font-size: 0.95rem;
+            }
+            .mom-name-input {
+                width: 95%;
+            }
+        }
+
+        /* custom file input hint */
+        .upload-hint {
+            font-size: 0.7rem;
+            margin-top: 5px;
+            color: #e27894;
+        }
+    </style>
+</head>
+<body>
+
+<div class="hearts-layer" id="heartsLayer"></div>
+
+<main class="tribute-card">
+    <div class="header">
+        <h1>🌷 Feliz día de la madre 🌷</h1>
+    </div>
+
+    <!-- Mom's image + name placeholder (fully interactive) -->
+    <div class="mom-profile">
+        <div class="img-container">
+            <img src="mom.jpg" id="momPhoto" class="mom-img" >
+        </div>
+        <div class="name-section">
+            <div id="nameDisplay" class="display-name">My Beautiful Mom</div>
+        </div>
+    </div>
+
+    <!-- short poem for her (heartfelt) -->
+    <div class="poem-box">
+        <div class="poem-title">🌹 Un Poema Para Ti, Mamá 🌹</div>
+        <div class="poem-text">
+            "En cada instante lleno de gratitud,<br>
+            Tu amor es melodía, calma y virtud.<br>
+            Cubriste mi mundo con dulce bondad,<br>
+            Luz infinita, abrazo de verdad.<br>
+            Por cada abrazo, consejo y oración,<br>
+            Florece en mi pecho eterno tu amor.<br>
+            <span>💖 Siempre agradecido contigo, mamá 💖</span>"
+        </div>
+    </div>
+
+    <div class="love-footer">
+        🌸 con todo mi corazón — para ti, hoy y siempre 🌸
+    </div>
+</main>
+
+<script>
+    (function() {
+        // ---------- HEARTS ANIMATION ON LOAD & CONTINUOUS MAGIC ----------
+        const heartsContainer = document.getElementById('heartsLayer');
+        
+        // Heart colors / variants: we can add class for style variation
+        const heartSymbol = '❤️';
+        const colorsVariation = ['#ff4d6d', '#ff758f', '#ff8c9e', '#ff99aa', '#f65b82'];
+        
+        // Function to create a heart element with random styles and animation
+        function createHeartElement() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            // random left percentage (0 to 100)
+            const leftPos = Math.random() * 100;
+            // random size between 18px and 42px
+            const size = 18 + Math.random() * 28;
+            // random animation duration: 4s to 10s
+            const duration = 4 + Math.random() * 7;
+            // random animation delay: 0s to 3s
+            const delay = Math.random() * 3;
+            // random color variation from array
+            const colorIdx = Math.floor(Math.random() * colorsVariation.length);
+            const heartColor = colorsVariation[colorIdx];
+            
+            // Slight opacity / extra glow
+            heart.style.left = leftPos + '%';
+            heart.style.fontSize = size + 'px';
+            heart.style.animationDuration = duration + 's';
+            heart.style.animationDelay = delay + 's';
+            heart.style.color = heartColor;
+            // add extra class for soft variation
+            if (Math.random() > 0.6) {
+                heart.classList.add('soft');
+            }
+            if (Math.random() > 0.8) {
+                heart.classList.add('light');
+            }
+            heart.innerHTML = heartSymbol;
+            // Additional filter randomness
+            heart.style.filter = `drop-shadow(0 0 ${4 + Math.random() * 6}px rgba(255,80,100,0.6))`;
+            return heart;
+        }
+        
+        // Spawn a single heart and remove it after animation ends
+        function spawnHeart() {
+            if (!heartsContainer) return;
+            const heart = createHeartElement();
+            heartsContainer.appendChild(heart);
+            // after animation ends, remove element to keep DOM clean
+            heart.addEventListener('animationend', function() {
+                if (heart.parentNode) heart.parentNode.removeChild(heart);
+            });
+            // safety timeout (remove if animation event fails for any reason)
+            setTimeout(() => {
+                if (heart.parentNode) heart.parentNode.removeChild(heart);
+            }, durationMs(heart));
+        }
+        
+        // Helper to get animation duration from computed style or fallback
+        function durationMs(heart) {
+            const dur = getComputedStyle(heart).animationDuration;
+            let seconds = parseFloat(dur);
+            if (isNaN(seconds)) seconds = 6;
+            return seconds * 1000 + 200;
+        }
+        
+        // Generate initial burst on load: 40 hearts rising together with staggered delay
+        function initialHeartExplosion() {
+            const burstCount = 45;
+            for (let i = 0; i < burstCount; i++) {
+                // small staggered delay so they don't all move at exact same time, but look abundant
+                setTimeout(() => {
+                    spawnHeart();
+                }, i * 70); // 70ms increments, smooth waterfall
+            }
+            // also extra wave after 1 sec to add density
+            setTimeout(() => {
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => spawnHeart(), i * 50);
+                }
+            }, 800);
+        }
+        
+        // Continuous hearts: generate a couple hearts every 1.2 seconds for infinite warm effect
+        let heartInterval;
+        function startContinuousHearts() {
+            heartInterval = setInterval(() => {
+                // spawn between 1 and 3 hearts per cycle
+                const heartsToSpawn = Math.floor(Math.random() * 3) + 1;
+                for (let i = 0; i < heartsToSpawn; i++) {
+                    spawnHeart();
+                }
+            }, 1300);
+        }
+        
+        // stop intervals on page unload (optional but clean)
+        window.addEventListener('beforeunload', () => {
+            if (heartInterval) clearInterval(heartInterval);
+        });
+        
+        // ------- IMAGE UPLOAD PLACEHOLDER LOGIC (adding mom's actual image) ------
+        const imageUploadInput = document.getElementById('imageUpload');
+        const momImageElem = document.getElementById('momPhoto');
+        
+        if (imageUploadInput) {
+            imageUploadInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file && (file.type.startsWith('image/'))) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        momImageElem.src = e.target.result;
+                        // add a little pop animation to image
+                        momImageElem.style.transform = 'scale(1.02)';
+                        setTimeout(() => { momImageElem.style.transform = 'scale(1)'; }, 200);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert("Please choose a valid image (jpg, png) for your lovely mom 💗");
+                }
+            });
+        }
+        
+        // ------- NAME PLACEHOLDER & REAL TIME DISPLAY (for mom's name)
+        const momNameInput = document.getElementById('momNameInput');
+        const nameDisplaySpan = document.getElementById('nameDisplay');
+        
+        function updateMomName() {
+            let newName = momNameInput.value.trim();
+            if (newName === "") {
+                newName = "My Wonderful Mom";
+                momNameInput.value = newName;   // sync back
+            }
+            nameDisplaySpan.textContent = newName;
+            // subtle animation on name update
+            nameDisplaySpan.style.transform = 'scale(1.05)';
+            setTimeout(() => { nameDisplaySpan.style.transform = 'scale(1)'; }, 150);
+        }
+        
+        if (momNameInput) {
+            momNameInput.addEventListener('input', updateMomName);
+            // initial update from default value
+            updateMomName();
+        }
+        
+        // ------- additional loading effect: hands-free extra hearts upon interaction?
+        // Also add a mousemove / click effect for extra love? optional but awesome: click on card creates hearts
+        const tributeCard = document.querySelector('.tribute-card');
+        if (tributeCard) {
+            tributeCard.addEventListener('click', (e) => {
+                // avoid too many clicks: spawn a little surprise heart only if target is not upload/input
+                if (e.target.closest('#imageUpload') || e.target.closest('.mom-name-input')) return;
+                for(let i=0;i<3;i++) {
+                    setTimeout(() => spawnHeart(), i*40);
+                }
+            });
+        }
+        
+        // add also hover effect on image container to generate a small heart
+        const imgContainer = document.querySelector('.img-container');
+        if(imgContainer){
+            imgContainer.addEventListener('mouseenter', () => {
+                spawnHeart();
+                setTimeout(() => spawnHeart(), 100);
+            });
+        }
+        
+        // initialize all hearts: on load, full animation
+        window.addEventListener('load', () => {
+            initialHeartExplosion();
+            startContinuousHearts();
+            // extra: make sure placeholder instruction and poem are charming
+        });
+        
+        // small fix: re-check animation for dynamically added hearts; ensure no duplicates
+        // also if someone scrolls, hearts layer stays fixed, all good.
+        
+        // For smoothness, add hearts also when window resize? not needed, but keep.
+        // Additional small decoration: floating hearts on first name update / image upload
+        // Already triggered through clicks
+    })();
+</script>
+</body>
+</html>
